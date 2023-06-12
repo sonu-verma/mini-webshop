@@ -25,7 +25,7 @@ class OrderController extends Controller
 
         $validator = Validator::make($request->all(), [
             'customer_id' => ['required', Rule::exists(Customer::class, 'id')],
-            'product_id' => ['required', Rule::exists(Product::class, 'id')],
+//            'product_id' => ['required', Rule::exists(Product::class, 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -42,8 +42,10 @@ class OrderController extends Controller
         ]);
         $productId = $request->get('product_id');
         if($order){
-            if (!$order->products()->find($productId)) {
-                $order->products()->attach($productId);
+            if(!empty($productId)){
+                if (!$order->products()->find($productId)) {
+                    $order->products()->attach($productId);
+                }
             }
         }
         return response()->json(['message' => 'Order created successfully.']);
@@ -52,7 +54,8 @@ class OrderController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'customer_id' => ['required', Rule::exists(Customer::class, 'id')],
+            'product_id' => [Rule::exists(Product::class, 'id')],
+            'customer_id' => [Rule::exists(Customer::class, 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -68,7 +71,20 @@ class OrderController extends Controller
         if(!$order){
             return response()->json(['error' => 'invalid order requested.'], 400);
         }
-        $order->update($request->all());
+
+        if($order){
+            if($order->payed != 1){
+                $order->update($request->all());
+                $productId = $request->get('product_id');
+                if(!empty($productId)){
+                    if (!$order->products()->find($productId)) {
+                        $order->products()->attach($productId);
+                    }
+                }
+            }else{
+                return response()->json(['error' => 'Can not delete order because payment has been done.'], 400);
+            }
+        }
         return response()->json(['message' => 'Order updated successfully.']);
     }
 
@@ -87,8 +103,13 @@ class OrderController extends Controller
         if(!$order){
             return response()->json(['error' => 'invalid order requested.'], 400);
         }
-        if($order->delete()){
-            return response()->json(['message' => 'Order deleted successfully.']);
+        if($order->payed == 1){
+            return response()->json(['error' => 'Can not delete order because payment has been done.'], 400);
+        }else{
+            if($order->delete()){
+                $order->products()->detach();
+                return response()->json(['message' => 'Order deleted successfully.']);
+            }
         }
     }
 

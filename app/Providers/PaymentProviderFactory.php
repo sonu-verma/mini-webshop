@@ -9,9 +9,7 @@ class PaymentProviderFactory
         if ($provider === 'super') {
             return new SuperPaymentProvider();
         }
-        // Add more conditions to handle additional payment providers in the future
-        // For example: elseif ($provider === 'new_provider') { return new NewPaymentProvider(); }
-
+        
         throw new \InvalidArgumentException('Invalid payment provider.');
     }
 }

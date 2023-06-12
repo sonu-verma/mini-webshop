@@ -90,7 +90,6 @@ class ImportMasterDataCommand extends Command
 
             $this->info('Master data import completed.');
 
-            // Logging import results
             Log::info("Import Summary: Customers imported: $importedCustomers, Customers skipped: $skippedCustomers, Products imported: $importedProducts, Products skipped: $skippedProducts");
         } catch (\Exception $e) {
             $this->error('An error occurred during the import: ' . $e->getMessage());
