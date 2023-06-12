@@ -72,13 +72,14 @@ php artisan import:masterdata
 
 | Task                   | Estimated Time (in hours) | Tracked Time (in hours) |
 |------------------------|---------------------------|-------------------------|
-| Analyzing requirements | 1.5                       | 2                       |
-| Implementing backend   | 5                         | 6                       |
-| Bug fixing             | 0.5                       | 1                       |
-| **Total**              | **7**                     | **9**                   |
+| Analyzing requirements | 1                         | 1.5                     |
+| Implementing backend   | 6                         | 8                       |
+| Bug fixing             | 1                         | 1.5                     |
+| Documentation          | 0.5                       | 1                       |
+| **Total**              | **8.5**                   | **12**                  |
 
 
 ## Postman Collection
 
-*Note: i have added collection of postman for apis related on postmanCollection under project
+*Note: I have added a collection of Postman related to APIs in PostmanCollection folder under the main project folder.
 
