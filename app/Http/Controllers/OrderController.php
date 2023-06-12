@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Customer;
 use App\Order;
 use App\Product;
+use App\PyamentLog;
 use App\Providers\PaymentProviderFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -142,19 +143,32 @@ class OrderController extends Controller
     public function payOrder(Request $request, $id)
     {
 
-        $order = $this->isValidOrder($request->get('order_id'));
+        $orderId = $request->get('order_id');
+        $order = $this->isValidOrder($orderId);
         if(!$order){
             return response()->json(['error' => 'invalid order requested.'], 400);
         }
         $providerName = 'super';
+        $logs = [];
+        $logs['order_id'] = $orderId;
+        $customer = Customer::where('email',$request->get('customer_email'))->get()->first();
+        if($customer){
+            $logs['payment_by'] = $customer->id;
+        }else{
+            return response()->json(['error' => 'invalid customer.'], 400);
+        }
 
         try {
             $paymentProvider = PaymentProviderFactory::create($providerName);
             $paymentSuccessful = $paymentProvider->processPayment($request->all());
             if($paymentSuccessful) {
                 $order->update(['payed' => true]);
+                $logs['status'] = 1;
+                PyamentLog::paymentLog($logs);
                 return response()->json(['message' => 'Payment Successful.']);
             } else {
+                $logs['status'] = 0;
+                PaymentLog::paymentLog($logs);
                 return response()->json(['error' => 'Insufficient Funds.'], 400);
             }
         } catch (\InvalidArgumentException $exception) {
