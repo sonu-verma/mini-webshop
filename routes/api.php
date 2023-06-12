@@ -30,6 +30,4 @@ Route::delete('/orders/{id}', [OrderController::class, 'destroy']);
 Route::post('/order/{id}/add', [OrderController::class, 'attachProduct']);
 Route::post('/order/{id}/pay', [OrderController::class, 'payOrder']);
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/payment/logs', [OrderController::class,'paymentLogs'])->name('payment.logs');

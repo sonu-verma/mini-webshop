@@ -18,7 +18,6 @@ class CreatePaymentLogsTable extends Migration
             $table->unsignedBigInteger('order_id');
             $table->string('payment_by');
             $table->date('payment_date');
-            $table->text('log_msg');
             $table->string('status');
 
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');

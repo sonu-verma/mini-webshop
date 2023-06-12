@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Customer;
 use App\Order;
+use App\PaymentLog;
 use App\Product;
-use App\PyamentLog;
 use App\Providers\PaymentProviderFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -158,13 +158,16 @@ class OrderController extends Controller
             return response()->json(['error' => 'invalid customer.'], 400);
         }
 
+        if($order->payed){
+            return response()->json(['message' => 'Payment already paid for this order.']);
+        }
         try {
             $paymentProvider = PaymentProviderFactory::create($providerName);
             $paymentSuccessful = $paymentProvider->processPayment($request->all());
             if($paymentSuccessful) {
                 $order->update(['payed' => true]);
                 $logs['status'] = 1;
-                PyamentLog::paymentLog($logs);
+                PaymentLog::paymentLog($logs);
                 return response()->json(['message' => 'Payment Successful.']);
             } else {
                 $logs['status'] = 0;
@@ -183,6 +186,11 @@ class OrderController extends Controller
             return false;
         }
         return $order;
+    }
+
+    public function paymentLogs(){
+        $logs = PaymentLog::with('order')->get()->toArray();
+        return response()->json(['paymentLogs' => $logs]);
     }
 
 }

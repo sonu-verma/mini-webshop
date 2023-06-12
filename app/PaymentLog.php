@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class PaymentLog extends Model
 {
+    public $timestamps = false;
+
     protected $fillable = [
         'order_id',
         'payment_by',
@@ -16,13 +18,16 @@ class PaymentLog extends Model
     protected $table = 'payment_logs';
 
 
-    public function paymentLog($data){
+    public static function paymentLog($data){
         SELF::create([
             'order_id' => $data['order_id'],
             'payment_by' => $data['payment_by'],
             'payment_date' => date('Y-m-d'),
-            'log_msg' => $data['log_msg'],
             'status' => $data['status'],
         ]);
+    }
+
+    public function order(){
+        return $this->belongsTo(Order::class)->with('customer');
     }
 }

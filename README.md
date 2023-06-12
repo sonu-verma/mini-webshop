@@ -76,3 +76,9 @@ php artisan import:masterdata
 | Implementing backend   | 5                         | 6                       |
 | Bug fixing             | 0.5                       | 1                       |
 | **Total**              | **7**                     | **9**                   |
+
+
+## Postman Collection
+
+*Note: i have added collection of postman for apis related on postmanCollection under project
+
