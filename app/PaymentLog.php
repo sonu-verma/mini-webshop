@@ -30,4 +30,8 @@ class PaymentLog extends Model
     public function order(){
         return $this->belongsTo(Order::class)->with('customer');
     }
+
+    public function paidBy(){
+        return $this->belongsTo(Customer::class,'payment_by','id');
+    }
 }

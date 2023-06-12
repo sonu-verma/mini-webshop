@@ -189,7 +189,7 @@ class OrderController extends Controller
     }
 
     public function paymentLogs(){
-        $logs = PaymentLog::with('order')->get()->toArray();
+        $logs = PaymentLog::with('order')->with('paidBy')->get()->toArray();
         return response()->json(['paymentLogs' => $logs]);
     }
 
